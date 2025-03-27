@@ -3,32 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
     "build": "next build",
+    "dev": "next dev --turbopack",
+    "format": "prettier --write \"**/*.{js,mjs,jsx,ts,tsx,json,css,scss,md}\"",
+    "format:check": "prettier --check \"**/*.{js,mjs,jsx,ts,tsx,json,css,scss,md}\"",
+    "postinstall": "pnpm simple-git-hooks",
+    "lint": "next lint --fix",
+    "lint:check": "next lint",
+    "serve": "next build && next start",
     "start": "next start",
-    "lint": "next lint"
+    "type:check": "tsc --noEmit",
+    "upgrade": "pnpm update --latest"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged",
+    "commit-msg": "pnpm commitlint --edit"
   },
   "dependencies": {
     "next": "15.2.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
+    "@codefast/eslint-config": "^0.2.36",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@commitlint/types": "^19.8.0",
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
+    "@tailwindcss/postcss": "^4.0.17",
+    "@types/node": "^22.13.14",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "eslint": "^9.23.0",
     "eslint-config-next": "15.2.4",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-packagejson": "^2.5.10",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "simple-git-hooks": "^2.12.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  },
-  "simple-git-hooks": {
-    "commit-msg": "pnpm commitlint --edit"
+    "tailwindcss": "^4.0.17",
+    "typescript": "^5.8.2"
   }
 }
