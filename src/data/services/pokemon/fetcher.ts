@@ -10,11 +10,17 @@ import { API_CONSTANTS } from '@/data/services/pokemon/constants';
  * @param options - Additional fetch options
  * @returns ApiResponse object containing data or error information
  */
-export async function apiFetcher<T>(url: string, options = {}): Promise<ApiResponse<T>> {
+export async function apiFetcher<T>(
+  url: string,
+  options: RequestInit = {},
+): Promise<ApiResponse<T>> {
   try {
     const defaultOptions = {
-      next: { revalidate: API_CONSTANTS.DEFAULT_CACHE_TIME },
-    };
+      next: {
+        revalidate: API_CONSTANTS.DEFAULT_CACHE_TIME,
+      },
+      cache: 'force-cache',
+    } satisfies RequestInit;
 
     const mergedOptions = { ...defaultOptions, ...options };
     const response = await fetch(url, mergedOptions);
