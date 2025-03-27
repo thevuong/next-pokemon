@@ -1,4 +1,4 @@
-import type { TypeDetailsResponse, TypePokemon } from '@/data/services/pokemon/types';
+import type { ApiResponse, TypeDetailsResponse, TypePokemon } from '@/data/services/pokemon/types';
 
 import { getPokemonByType } from '@/data/services/pokemon/api/types';
 import { MIN_MATCHING_TYPES } from '@/data/services/pokemon/constants';
@@ -10,10 +10,18 @@ import {
 /**
  * Counts how many types each Pokémon belongs to
  */
-function countPokemonOccurrencesByType(typeResponses: TypeDetailsResponse[]): Map<string, number> {
+function countPokemonOccurrencesByType(
+  responses: ApiResponse<TypeDetailsResponse>[],
+): Map<string, number> {
   const idOccurrences = new Map<string, number>();
 
-  for (const typeData of typeResponses) {
+  for (const response of responses) {
+    if (!response.success) {
+      continue;
+    }
+
+    const typeData = response.data;
+
     for (const { pokemon } of typeData.pokemon) {
       const id = extractPokemonIdFromUrl(pokemon.url);
 
@@ -43,9 +51,13 @@ export function extractAndSortPokemonIds(pokemonList: TypePokemon[]): string[] {
  * Finds Pokémon of a single type
  */
 export async function findPokemonBySingleType(type: string): Promise<string[]> {
-  const typeResponse = await getPokemonByType(type);
+  const response = await getPokemonByType(type);
 
-  return extractAndSortPokemonIds(typeResponse.pokemon);
+  if (!response.success) {
+    return [];
+  }
+
+  return extractAndSortPokemonIds(response.data.pokemon);
 }
 
 /**
@@ -53,10 +65,10 @@ export async function findPokemonBySingleType(type: string): Promise<string[]> {
  */
 export async function findPokemonByMultipleTypes(types: string[]): Promise<string[]> {
   // Fetch Pokémon data for each requested type in parallel
-  const typeResponses = await Promise.all(types.map((type) => getPokemonByType(type)));
+  const responses = await Promise.all(types.map((type) => getPokemonByType(type)));
 
   // Count occurrences of each Pokémon ID across the different types
-  const idOccurrences = countPokemonOccurrencesByType(typeResponses);
+  const idOccurrences = countPokemonOccurrencesByType(responses);
 
   // Filter Pokémon that match at least the minimum number of required types
   const matchingPokemonIds = [...idOccurrences.entries()]

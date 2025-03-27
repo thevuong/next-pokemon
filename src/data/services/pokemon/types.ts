@@ -84,3 +84,21 @@ export interface PokemonAPIResponse {
     };
   }[];
 }
+
+export interface ApiSuccessResponse<T> {
+  data: T;
+  error: null;
+  success: true;
+}
+
+export interface ApiErrorResponse {
+  data: null;
+  error: {
+    message: string;
+    originalError?: unknown;
+    status?: number;
+  };
+  success: false;
+}
+
+export type ApiResponse<T> = ApiErrorResponse | ApiSuccessResponse<T>;

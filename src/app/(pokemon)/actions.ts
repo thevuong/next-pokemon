@@ -30,7 +30,11 @@ export async function fetchPokemon(
  * @returns Array of Pokémon type names as strings
  */
 export async function fetchTypes(): Promise<string[]> {
-  const data = await getTypes();
+  const response = await getTypes();
 
-  return data.results.map((type) => type.name);
+  if (!response.success) {
+    return [];
+  }
+
+  return response.data.results.map((type) => type.name);
 }

@@ -1,4 +1,4 @@
-import type { TypeDetailsResponse } from '@/data/services/pokemon/types';
+import type { ApiResponse, TypeDetailsResponse } from '@/data/services/pokemon/types';
 
 import { API_CONSTANTS } from '@/data/services/pokemon/constants';
 import { apiFetcher, buildApiUrl } from '@/data/services/pokemon/fetcher';
@@ -8,7 +8,7 @@ import { apiFetcher, buildApiUrl } from '@/data/services/pokemon/fetcher';
  * @param type - The name of the Pokémon type to retrieve
  * @returns Promise with detailed information about the Pokémon type
  */
-export async function getPokemonByType(type: string): Promise<TypeDetailsResponse> {
+export async function getPokemonByType(type: string): Promise<ApiResponse<TypeDetailsResponse>> {
   const url = buildApiUrl(`${API_CONSTANTS.ENDPOINTS.TYPES}/${type}`);
 
   return apiFetcher<TypeDetailsResponse>(url);

@@ -37,13 +37,21 @@ async function getUnfilteredPokemonList(
   limit: number,
 ): Promise<{ pokemon: PokemonDetails[]; total: number }> {
   const pokemonList = await getPokemonList(offset, limit);
+
+  if (!pokemonList.success) {
+    return {
+      pokemon: [],
+      total: 0,
+    };
+  }
+
   const pokemonDetails = await Promise.all(
-    pokemonList.results.map((pokemon) => getPokemonDetails(pokemon.url)),
+    pokemonList.data.results.map((pokemon) => getPokemonDetails(pokemon.url)),
   );
 
   return {
     pokemon: pokemonDetails,
-    total: pokemonList.count,
+    total: pokemonList.data.count,
   };
 }
 

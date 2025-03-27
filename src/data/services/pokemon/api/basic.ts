@@ -1,4 +1,8 @@
-import type { PokemonListResponse, TypeListResponse } from '@/data/services/pokemon/types';
+import type {
+  ApiResponse,
+  PokemonListResponse,
+  TypeListResponse,
+} from '@/data/services/pokemon/types';
 
 import { API_CONSTANTS, DEFAULT_LIMIT, DEFAULT_OFFSET } from '@/data/services/pokemon/constants';
 import { apiFetcher, buildApiUrl } from '@/data/services/pokemon/fetcher';
@@ -13,7 +17,7 @@ import { validatePaginationParams } from '@/data/services/pokemon/helpers/pagina
 export async function getPokemonList(
   offset = DEFAULT_OFFSET,
   limit = DEFAULT_LIMIT,
-): Promise<PokemonListResponse> {
+): Promise<ApiResponse<PokemonListResponse>> {
   validatePaginationParams(offset, limit);
   const url = buildApiUrl(API_CONSTANTS.ENDPOINTS.POKEMON, { limit, offset });
 
@@ -24,7 +28,7 @@ export async function getPokemonList(
  * Fetches the list of all Pokémon types
  * @returns Promise with type list response
  */
-export async function getTypes(): Promise<TypeListResponse> {
+export async function getTypes(): Promise<ApiResponse<TypeListResponse>> {
   const url = buildApiUrl(API_CONSTANTS.ENDPOINTS.TYPES);
 
   return apiFetcher<TypeListResponse>(url);

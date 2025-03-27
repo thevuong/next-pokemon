@@ -1,15 +1,16 @@
 import queryString from 'query-string';
 
+import type { ApiResponse } from '@/data/services/pokemon/types';
+
 import { API_CONSTANTS } from '@/data/services/pokemon/constants';
 
 /**
  * Reusable fetcher function for API requests
  * @param url - The URL to fetch data from
  * @param options - Additional fetch options
- * @returns Promise with the parsed JSON response
- * @throws Error if the request fails
+ * @returns ApiResponse object containing data or error information
  */
-export async function apiFetcher<T>(url: string, options = {}): Promise<T> {
+export async function apiFetcher<T>(url: string, options = {}): Promise<ApiResponse<T>> {
   try {
     const defaultOptions = {
       next: { revalidate: API_CONSTANTS.DEFAULT_CACHE_TIME },
@@ -19,13 +20,39 @@ export async function apiFetcher<T>(url: string, options = {}): Promise<T> {
     const response = await fetch(url, mergedOptions);
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+      console.error(`API request failed with status ${response.status}: ${response.statusText}`);
+
+      return {
+        data: null,
+        error: {
+          message: `API request failed with status ${response.status}: ${response.statusText}`,
+          status: response.status,
+        },
+        success: false,
+      };
     }
 
-    return (await response.json()) as T;
+    const data = (await response.json()) as T;
+
+    return {
+      data,
+      error: null,
+      success: true,
+    };
   } catch (error) {
     console.error(`Failed to fetch data from ${url}:`, error);
-    throw error;
+
+    return {
+      data: null,
+      error: {
+        message:
+          error instanceof Error
+            ? error.message
+            : 'An undefined error occurred while loading data.',
+        originalError: error,
+      },
+      success: false,
+    };
   }
 }
 

@@ -18,7 +18,18 @@ export async function getPokemonDetails(url: string): Promise<PokemonDetails> {
     throw new Error('Pokemon name or ID is required');
   }
 
-  const data = await apiFetcher<PokemonAPIResponse>(url);
+  const response = await apiFetcher<PokemonAPIResponse>(url);
+
+  if (!response.success) {
+    return {
+      id: 0,
+      name: '',
+      image: '',
+      types: [],
+    };
+  }
+
+  const data = response.data;
 
   // Transform the API response to match our PokemonDetails interface
   return {
