@@ -20,10 +20,6 @@ export async function getPokemonDetails(url: string): Promise<PokemonDetails> {
 
   const data = await apiFetcher<PokemonAPIResponse>(url);
 
-  if (data.id === 10_270) {
-    console.log(JSON.stringify(data.sprites));
-  }
-
   // Transform the API response to match our PokemonDetails interface
   return {
     id: data.id,

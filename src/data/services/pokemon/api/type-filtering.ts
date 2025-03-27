@@ -62,7 +62,7 @@ async function getTypesFilteredPokemonList(
   const total = matchingPokemonIds.length;
 
   // Get the IDs for the current page based on offset and limit
-  const paginatedIds = paginateIds(matchingPokemonIds, offset, limit);
+  const paginatedIds = paginateIds(matchingPokemonIds, offset * limit, limit);
 
   // Fetch detailed information for each Pokémon on the current page
   const detailedPokemon = await Promise.all(
